@@ -1,4 +1,4 @@
-![](addons/rest_api_server/docs/icon.png)
+![](icon.png)
 
 # REST API Server for Godot 4.x
 
