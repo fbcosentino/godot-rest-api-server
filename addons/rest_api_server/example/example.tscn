@@ -1,0 +1,289 @@
+[gd_scene load_steps=6 format=3 uid="uid://bpn4rmx6kjoqx"]
+
+[ext_resource type="PackedScene" uid="uid://cxknv74k0ti8d" path="res://addons/rest_api_server/api/rest_http_server.tscn" id="1_8rgmi"]
+[ext_resource type="Script" uid="uid://501cd65edw0o" path="res://addons/rest_api_server/example/example.gd" id="1_rbrdk"]
+[ext_resource type="Script" uid="uid://geghdbjfhklp" path="res://addons/rest_api_server/api/api_handler.gd" id="3_i1urc"]
+[ext_resource type="PackedScene" uid="uid://cgkaxljhpwdu" path="res://addons/rest_api_server/api/api_handler.tscn" id="3_rbrdk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rbrdk"]
+bg_color = Color(0, 0, 0, 0.184314)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.453232, 0.453232, 0.453232, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Example" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_rbrdk")
+
+[node name="RESTHttpServer" parent="." instance=ExtResource("1_8rgmi")]
+auto_start = true
+
+[node name="IndexHandler" type="Node" parent="RESTHttpServer"]
+script = ExtResource("3_i1urc")
+path_prefix = ""
+endpoints = Array[String](["", "/"])
+metadata/_custom_type_script = "uid://geghdbjfhklp"
+
+[node name="APIHandler_v1" parent="RESTHttpServer" instance=ExtResource("3_rbrdk")]
+endpoints = Array[String](["", "/", "/users", "/users/:username"])
+
+[node name="APIHandler_v2" parent="RESTHttpServer" instance=ExtResource("3_rbrdk")]
+path_prefix = "/api/v2"
+endpoints = Array[String](["/users", "/users/:username", "/users/:username/:property"])
+
+[node name="HTTPRequestClient" type="HTTPRequest" parent="."]
+
+[node name="LabelDescription" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 17.0
+offset_top = -89.0
+offset_right = -12.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 12
+text = "This example demonstrates a REST server with two API handlers (plus a handler for the index).
+In this example, they are separately handling two API versions, with prefixes \"/api/v1\" and \"/api/v2\" respectively.
+This is just one possible usage. You can have multiple handlers in the same API version, or a single handler for everything. Handler scope and interpretation is up to you.
+The actual impact of using several handlers is to organize the Godot signals emitted: endpoints handled by a single API handler will go through the same signal."
+autowrap_mode = 3
+
+[node name="PanelInstructions" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -253.0
+offset_top = 12.0
+offset_right = -11.0
+offset_bottom = 474.0
+grow_horizontal = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_rbrdk")
+
+[node name="Label" type="RichTextLabel" parent="PanelInstructions"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 8.0
+offset_top = 33.0
+offset_right = -12.0
+offset_bottom = 450.0
+grow_horizontal = 2
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+text = "Run this scene, then open your browser and navigate to:
+    [color=yellow]https://127.0.0.1:8080/[/color]
+if using TLS, or if not:
+    [color=yellow]http://127.0.0.1:8080/[/color]
+
+Then read the instructions and pick an API version.
+
+For Version 2, you can also use the HTTPRequest client here.
+
+if you want to use TLS (for [color=yellow]https[/color]), you will need a certificate. You can use
+[color=green]res://addons/rest_api_server/tls/ssl_tls_generator.tscn[/color]
+to generate one during development.
+(Be aware clients might complain about the certificate not being verified.)
+
+You should use standard certificate generation methods for production."
+
+[node name="Label2" type="Label" parent="PanelInstructions"]
+layout_mode = 0
+offset_left = 8.0
+offset_top = 7.0
+offset_right = 166.0
+offset_bottom = 30.0
+theme_override_colors/font_color = Color(0, 1, 1, 1)
+text = "To test the example:"
+
+[node name="PanelUsers" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 461.0
+offset_bottom = 535.0
+
+[node name="Label" type="Label" parent="PanelUsers"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 3.0
+offset_right = 102.0
+offset_bottom = 20.0
+theme_override_font_sizes/font_size = 12
+text = "User database (JSON)"
+
+[node name="TextEditUsers" type="TextEdit" parent="PanelUsers"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 25.0
+offset_right = -6.0
+offset_bottom = -44.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/line_spacing = -2
+theme_override_font_sizes/font_size = 12
+text = "{
+	\"alice\": {
+        \"name\": \"Alice Smith\",
+        \"profession\": \"Vampire\",
+        \"age\": \"249\"
+	},
+    \"bob\": {
+        \"name\": \"Bob Ross\",
+        \"profession\": \"Chill Painter\",
+        \"age\": \"52\"
+    },
+    \"charlie\": {
+        \"name\": \"Charlie Enby\",
+        \"profession\": \"Godot Developer\",
+        \"age\": \"42\"
+    }
+}"
+
+[node name="BtnReload" type="Button" parent="PanelUsers"]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 7.0
+offset_top = -37.0
+offset_right = -6.0
+offset_bottom = -6.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Reload database"
+
+[node name="PanelClient" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 488.0
+offset_top = 21.0
+offset_right = 833.0
+offset_bottom = 532.0
+
+[node name="Label" type="Label" parent="PanelClient"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 218.0
+offset_bottom = 23.0
+theme_override_font_sizes/font_size = 12
+text = "HTTPRequest client (used to test v2)"
+
+[node name="EditServer" type="LineEdit" parent="PanelClient"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 64.0
+offset_right = 322.0
+offset_bottom = 95.0
+text = "http://127.0.0.1:8080"
+placeholder_text = "Server address, without path"
+
+[node name="Label" type="Label" parent="PanelClient/EditServer"]
+layout_mode = 0
+offset_top = -19.0
+offset_right = 256.0
+offset_bottom = -2.0
+theme_override_font_sizes/font_size = 12
+text = "Server address (with protocol, without path)"
+
+[node name="EditPath" type="LineEdit" parent="PanelClient"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 136.0
+offset_right = 322.0
+offset_bottom = 167.0
+text = "/api/v2/users"
+placeholder_text = "API endpoint, full path"
+
+[node name="Label" type="Label" parent="PanelClient/EditPath"]
+layout_mode = 0
+offset_top = -19.0
+offset_right = 256.0
+offset_bottom = -2.0
+theme_override_font_sizes/font_size = 12
+text = "API endpoint (full path)"
+
+[node name="Label2" type="Label" parent="PanelClient"]
+offset_left = 23.0
+offset_top = 184.0
+offset_right = 279.0
+offset_bottom = 227.0
+theme_override_constants/line_spacing = -4
+theme_override_font_sizes/font_size = 12
+text = "Data to send (PUT, POST)
+or data read (from GET)
+or response body (from DELETE)"
+
+[node name="EditContent" type="TextEdit" parent="PanelClient"]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 231.0
+offset_right = 331.0
+offset_bottom = 461.0
+theme_override_colors/font_placeholder_color = Color(1, 1, 1, 0.203922)
+theme_override_font_sizes/font_size = 12
+placeholder_text = "(empty)"
+
+[node name="BtnClientGet" type="Button" parent="PanelClient"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 470.0
+offset_right = 87.0
+offset_bottom = 501.0
+focus_mode = 0
+text = "GET"
+
+[node name="BtnClientPut" type="Button" parent="PanelClient"]
+layout_mode = 0
+offset_left = 95.0
+offset_top = 470.0
+offset_right = 167.0
+offset_bottom = 501.0
+focus_mode = 0
+text = "PUT"
+
+[node name="BtnClientPost" type="Button" parent="PanelClient"]
+layout_mode = 0
+offset_left = 175.0
+offset_top = 470.0
+offset_right = 247.0
+offset_bottom = 501.0
+focus_mode = 0
+text = "POST"
+
+[node name="BtnClientDelete" type="Button" parent="PanelClient"]
+layout_mode = 0
+offset_left = 255.0
+offset_top = 470.0
+offset_right = 327.0
+offset_bottom = 501.0
+focus_mode = 0
+text = "DELETE"
+
+[connection signal="no_handler_found" from="RESTHttpServer" to="." method="_on_rest_http_server_no_handler_found"]
+[connection signal="get_requested" from="RESTHttpServer/IndexHandler" to="." method="_on_index_handler_get_requested"]
+[connection signal="get_requested" from="RESTHttpServer/APIHandler_v1" to="." method="_on_api_handler_v_1_get_requested"]
+[connection signal="get_requested" from="RESTHttpServer/APIHandler_v2" to="." method="_on_api_handler_v_2_get_requested"]
+[connection signal="pressed" from="PanelUsers/BtnReload" to="." method="_on_btn_reload_pressed"]
+[connection signal="pressed" from="PanelClient/BtnClientGet" to="." method="_on_btn_client_get_pressed"]
+[connection signal="pressed" from="PanelClient/BtnClientPut" to="." method="_on_btn_client_put_pressed"]
+[connection signal="pressed" from="PanelClient/BtnClientPost" to="." method="_on_btn_client_post_pressed"]
+[connection signal="pressed" from="PanelClient/BtnClientDelete" to="." method="_on_btn_client_delete_pressed"]

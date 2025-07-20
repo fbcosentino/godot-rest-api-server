@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxknv74k0ti8d"]
+
+[ext_resource type="Script" uid="uid://bqyh75xbvstxt" path="res://addons/rest_api_server/godottpd/http_server.gd" id="1_vbn5g"]
+
+[node name="RESTHttpServer" type="Node"]
+script = ExtResource("1_vbn5g")

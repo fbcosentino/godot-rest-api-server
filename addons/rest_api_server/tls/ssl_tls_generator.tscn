@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=3 uid="uid://dkm4d00o0m45g"]
+
+[ext_resource type="Script" uid="uid://chvlmulxh858r" path="res://addons/rest_api_server/tls/ssl_tls_generator.gd" id="1_0ncbt"]
+
+[node name="SSLTLSGenerator" type="Label"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 36
+text = "RUN THIS SCENE TO REGENERATE THE
+SSL/TLS CERTIFICATE AND KEY USED BY THE ADDON
+
+USE THIS FOR DEVELOPMENT.
+IN A PRODUCTION ENVIRONMENT,
+YOU SHOULD PRODUCE YOUR CREDENTIALS VIA
+STANDARD PROCEDURES"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+script = ExtResource("1_0ncbt")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -46.0
+grow_horizontal = 2
+grow_vertical = 0
+focus_mode = 0
+text = "GENERATE"
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
